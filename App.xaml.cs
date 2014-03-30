@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Notifications;
+using Windows.UI.StartScreen;
 
 // 空のアプリケーション テンプレートについては、http://go.microsoft.com/fwlink/?LinkId=234227 を参照してください
 
@@ -19,6 +20,13 @@ namespace tile_calc
         {
             this.InitializeComponent();
 
+            pushToast();
+
+            Application.Current.Exit();
+        }
+
+        private void pushToast()
+        {
             var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
             toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode("Hello from toast!"));
 
@@ -26,8 +34,13 @@ namespace tile_calc
             toast.ExpirationTime = DateTimeOffset.UtcNow.AddSeconds(10);
 
             ToastNotificationManager.CreateToastNotifier().Show(toast);
+        }
 
-            Application.Current.Exit();
+        private async void createSecondaryTile()
+        {
+            var secondaryTile = new SecondaryTile("calc-child", "tile-calc", "hogehoge", new Uri("ms-appx:///Assets/Logo.scale-100.png"), TileSize.Square150x150);
+
+            await secondaryTile.RequestCreateAsync();
         }
     }
 }
