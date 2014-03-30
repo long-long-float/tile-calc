@@ -4,18 +4,18 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{e98512b2-d94a-4fbd-ade2-f739fa25f680}</ProjectGuid>
+    <ProjectGuid>{6c5d13df-9eb0-436f-bfcb-6e48fbc3499b}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>tile_calc</RootNamespace>
-    <AssemblyName>tile-calc</AssemblyName>
+    <RootNamespace>button</RootNamespace>
+    <AssemblyName>button</AssemblyName>
     <DefaultLanguage>ja-JP</DefaultLanguage>
     <TargetPlatformVersion>8.1</TargetPlatformVersion>
     <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     
-    <PackageCertificateKeyFile>tile-calc_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>button_TemporaryKey.pfx</PackageCertificateKeyFile>
     
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -120,7 +120,7 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     
-    <None Include="tile-calc_TemporaryKey.pfx" />
+    <None Include="button_TemporaryKey.pfx" />
     
   </ItemGroup>
   <ItemGroup>
