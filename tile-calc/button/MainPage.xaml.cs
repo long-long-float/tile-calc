@@ -38,19 +38,13 @@ namespace button
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             var arg = (string)e.Parameter;
 
             if (arg != "")
             {
-                var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
-                toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode("clicked " + arg));
-
-                var toast = new ToastNotification(toastXml);
-                toast.ExpirationTime = DateTimeOffset.UtcNow.AddSeconds(10);
-
-                ToastNotificationManager.CreateToastNotifier().Show(toast);
+                await Windows.System.Launcher.LaunchUriAsync(new Uri("tile-calc://" + arg));
 
                 Application.Current.Exit();
             }

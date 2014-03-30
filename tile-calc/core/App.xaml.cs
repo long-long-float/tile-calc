@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Notifications;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -32,6 +33,20 @@ namespace core
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+        }
+
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            if(args.Kind == ActivationKind.Protocol)
+            {
+                var toastXml = ToastNotificationManager.GetTemplateContent(ToastTemplateType.ToastText01);
+                toastXml.GetElementsByTagName("text")[0].AppendChild(toastXml.CreateTextNode("clicked " + ((ProtocolActivatedEventArgs)args).Uri));
+
+                var toast = new ToastNotification(toastXml);
+                toast.ExpirationTime = DateTimeOffset.UtcNow.AddSeconds(10);
+
+                ToastNotificationManager.CreateToastNotifier().Show(toast);
+            }
         }
 
         /// <summary>
