@@ -9,5 +9,6 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Button Content="電卓のボタンを作る" HorizontalAlignment="Left" Margin="622,348,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Click="Button_Click"/>
+        <Button Content="スタックファイルの削除" HorizontalAlignment="Left" Margin="650,271,0,0" VerticalAlignment="Top" Click="Button_Click_1"/>
     </Grid>
 </Page>

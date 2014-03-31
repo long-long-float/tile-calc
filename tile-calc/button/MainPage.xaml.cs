@@ -36,9 +36,12 @@ namespace button
 
         private async void Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            foreach (var i in Enumerable.Range(0, 1))
+            var buttons = Enumerable.Range(0, 2).Select(x => x.ToString())
+                .Concat(new String[] { "+", "=" });
+
+            foreach (var i in buttons)
             {
-                var secondaryTile = new SecondaryTile("calc-child" + i, i.ToString(), i.ToString(), new Uri("ms-appx:///Assets/Logo.scale-100.png"), TileSize.Square150x150);
+                var secondaryTile = new SecondaryTile("calc-child" + i, i, i, new Uri("ms-appx:///Assets/Logo.scale-100.png"), TileSize.Square150x150);
                 await secondaryTile.RequestCreateAsync();
             }
         }
@@ -52,6 +55,48 @@ namespace button
             toast.ExpirationTime = DateTimeOffset.UtcNow.AddSeconds(10);
 
             ToastNotificationManager.CreateToastNotifier().Show(toast);
+        }
+
+        private List<String> OPERATORS = new List<String>(){"+", "-", "*", "/"};
+        private List<Func<int, int, int>> BEHAVIORS = new List<Func<int, int, int>>()
+        {
+            (l, r) => l + r, (l, r) => l + r, (l, r) => l * r, (l, r) => l / r
+        };
+
+        private void convertToRPN(List<String> tokens, List<String> rpn)
+        {
+            foreach(var ope in OPERATORS)
+            {
+                int index = tokens.IndexOf(ope);
+                if (index != -1)
+                {
+                    convertToRPN(tokens.Take(index).ToList(), rpn);
+                    convertToRPN(tokens.Skip(index + 1).ToList(), rpn);
+                    rpn.Add(ope);
+
+                    return;
+                }
+            }
+            rpn.Add(tokens[0]);
+        }
+
+        private int calc(List<String> rpn)
+        {
+            var stack = new Stack<String>();
+            foreach(var token in rpn)
+            {
+                int i;
+                if((i = OPERATORS.IndexOf(token)) != -1)
+                {
+                    int r = int.Parse(stack.Pop()), l = int.Parse(stack.Pop());
+                    stack.Push(BEHAVIORS[i](l, r).ToString());
+                }
+                else
+                {
+                    stack.Push(token);
+                }
+            }
+            return int.Parse(stack.Pop());
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -84,6 +129,18 @@ namespace button
 
                 items.Add(arg);
 
+                switch (arg)
+                {
+                    case "=":
+                        List<String> rpn = new List<String>();
+                        convertToRPN(items, rpn);
+                        showToast(calc(rpn).ToString());
+                        items.Clear();
+                        break;
+                    default:
+                        break;
+                }
+
                 showToast(String.Join(", ", items));
 
                 JsonArray jsonAry = new JsonArray();
@@ -97,6 +154,23 @@ namespace button
 
                 Application.Current.Exit();
             }
+        }
+
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var folder = ApplicationData.Current.LocalFolder;
+            StorageFile file;
+            try
+            {
+                file = await folder.GetFileAsync("state.json");
+            }
+            catch(FileNotFoundException)
+            {
+                return;
+            }
+
+            await file.DeleteAsync();
+            showToast("スタックファイルを削除しました");
         }
     }
 }
