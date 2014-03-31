@@ -34,14 +34,24 @@ namespace button
             this.InitializeComponent();
         }
 
+        private async void createSecondaryTile(String name, String arg)
+        {
+            var secondaryTile = new SecondaryTile("calc-child" + name, name, arg, new Uri("ms-appx:///Assets/" + name + ".png"), TileSize.Square150x150);
+            await secondaryTile.RequestCreateAsync();
+        }
+
         private async void Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            var buttons = Enumerable.Range(0, 2).Select(x => x.ToString())
-                .Concat(new String[] { "+", "=" });
-
-            foreach (var i in buttons)
+            foreach (var i in Enumerable.Range(0, 10))
             {
-                var secondaryTile = new SecondaryTile("calc-child" + i, i, i, new Uri("ms-appx:///Assets/" + i + ".png"), TileSize.Square150x150);
+                var name = i.ToString();
+                var secondaryTile = new SecondaryTile("calc-child" + name, name, name, new Uri("ms-appx:///Assets/" + name + ".png"), TileSize.Square150x150);
+                await secondaryTile.RequestCreateAsync();
+            }
+            var opes = new Dictionary<String, String>() { { "plus", "+" }, { "minus", "-" }, { "multiply", "*" }, { "divide", "/"}, {"equal", "="} };
+            foreach (var name in opes)
+            {
+                var secondaryTile = new SecondaryTile("calc-child" + name.Key, name.Key, name.Value, new Uri("ms-appx:///Assets/" + name.Key + ".png"), TileSize.Square150x150);
                 await secondaryTile.RequestCreateAsync();
             }
         }
@@ -60,7 +70,7 @@ namespace button
         private List<String> OPERATORS = new List<String>(){"+", "-", "*", "/"};
         private List<Func<int, int, int>> BEHAVIORS = new List<Func<int, int, int>>()
         {
-            (l, r) => l + r, (l, r) => l + r, (l, r) => l * r, (l, r) => l / r
+            (l, r) => l + r, (l, r) => l - r, (l, r) => l * r, (l, r) => l / r
         };
 
         private void convertToRPN(List<String> tokens, List<String> rpn)
@@ -130,8 +140,7 @@ namespace button
                         List<String> rpn = new List<String>();
                         convertToRPN(items, rpn);
                         showToast(calc(rpn).ToString());
-                        items = new List<String>();
-                        items.Add("1");
+                        items.Clear();
                         break;
                     default:
                         showToast(String.Join(" ", items));
