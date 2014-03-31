@@ -41,7 +41,7 @@ namespace button
 
             foreach (var i in buttons)
             {
-                var secondaryTile = new SecondaryTile("calc-child" + i, i, i, new Uri("ms-appx:///Assets/Logo.scale-100.png"), TileSize.Square150x150);
+                var secondaryTile = new SecondaryTile("calc-child" + i, i, i, new Uri("ms-appx:///Assets/" + i + ".png"), TileSize.Square150x150);
                 await secondaryTile.RequestCreateAsync();
             }
         }
@@ -108,12 +108,7 @@ namespace button
                 var folder = ApplicationData.Current.LocalFolder;
                 var file = await folder.CreateFileAsync("state.json", Windows.Storage.CreationCollisionOption.OpenIfExists);
                 
-                string content;
-                using (var stream = (await file.OpenAsync(Windows.Storage.FileAccessMode.Read)).AsStream())
-                using (var reader = new StreamReader(stream))
-                {
-                    content = await reader.ReadToEndAsync();
-                }
+                string content = await FileIO.ReadTextAsync(file);
 
                 List<String> items;
                 try
@@ -126,7 +121,7 @@ namespace button
                 {
                     items = new List<String>();
                 }
-
+               
                 items.Add(arg);
 
                 switch (arg)
@@ -135,22 +130,18 @@ namespace button
                         List<String> rpn = new List<String>();
                         convertToRPN(items, rpn);
                         showToast(calc(rpn).ToString());
-                        items.Clear();
+                        items = new List<String>();
+                        items.Add("1");
                         break;
                     default:
+                        showToast(String.Join(" ", items));
                         break;
                 }
-
-                showToast(String.Join(", ", items));
 
                 JsonArray jsonAry = new JsonArray();
                 foreach (var item in items) jsonAry.Add(JsonValue.CreateStringValue(item));
 
-                using (var stream = (await file.OpenAsync(Windows.Storage.FileAccessMode.ReadWrite)).AsStream())
-                using(var writer = new StreamWriter(stream))
-                {
-                    await writer.WriteAsync(jsonAry.Stringify());
-                }
+                await FileIO.WriteTextAsync(file, jsonAry.Stringify());
 
                 Application.Current.Exit();
             }
