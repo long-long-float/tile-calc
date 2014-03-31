@@ -8,7 +8,6 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    	<Button Content="電卓のボタンを作る" HorizontalAlignment="Left" Margin="622,348,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Click="Button_Click"/>
-
+        <Button Content="電卓のボタンを作る" HorizontalAlignment="Left" Margin="622,348,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Click="Button_Click"/>
     </Grid>
 </Page>
